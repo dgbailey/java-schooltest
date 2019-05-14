@@ -26,6 +26,8 @@ public class CourseServiceImplTest {
 
     @Autowired CourseServiceImpl courseService;
 
+    @Autowired InstructorService instructorService;
+
     @Before
     public void setUp() throws Exception
     {
@@ -65,17 +67,21 @@ public class CourseServiceImplTest {
     @Test
     public void save() {
 
-        Course c = new Course("DustinCourse");
-        c.setCourseid(8);
+        //originally could not find instructor id
+        //was not saving the newly created instructor with appropriate repo method
+        //not sure if this test should actaully use an instructor object as it is just testing adding a course
         Instructor newInstruct = new Instructor("Dustin");
         newInstruct.setInstructid(10);
-        c.setInstructor(newInstruct);
+        Instructor savedInstruct = instructorService.save(newInstruct);
+
+        Course c = new Course("DustinCourse",savedInstruct);
+        c.setCourseid(8);
 
         Course addCourse = courseService.save(c);
 
         assertNotNull(addCourse);
 
-        Course foundRestaurant = courseService.findCourseById(addCourse.getCourseid());
-        assertEquals(addCourse.getCoursename(), foundRestaurant.getCoursename());
+        Course foundCourse = courseService.findCourseById(addCourse.getCourseid());
+        assertEquals(addCourse.getCoursename(), foundCourse.getCoursename());
     }
 }

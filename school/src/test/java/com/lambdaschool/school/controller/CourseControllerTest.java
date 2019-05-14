@@ -112,4 +112,25 @@ public class CourseControllerTest {
 
         assertEquals("Rest API Returns List", er, tr);
     }
+
+    @Test
+    public void addNewCourse() throws Exception{
+        String apiUrl = "/courses/course/add";
+
+
+        Course c = new Course("DustinCourse");
+        c.setCourseid(8);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String courseString = mapper.writeValueAsString(c);
+
+        Mockito.when(courseService.save(any(Course.class))).thenReturn(c);
+        //mock returning added course data
+
+        RequestBuilder rb = MockMvcRequestBuilders.post(apiUrl)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+                .content(courseString);
+        mockMvc.perform(rb).andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print());
+        //mocking request to resource URI expecting certain status printing ???
+    }
 }
